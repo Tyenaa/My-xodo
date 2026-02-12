@@ -40,14 +40,35 @@ button{
 button:hover{transform:scale(1.07);box-shadow:0 0 25px rgba(255,255,255,0.8);}
 .hidden{display:none;}
 .success{margin-top:20px;font-size:1.3rem;animation:pop 0.8s ease forwards;}
-.finalMessage{margin-top:25px;font-size:1.05rem;line-height:1.7;animation:fadeIn 2s ease forwards;}
 
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 @keyframes pop{0%{transform:scale(0.5);opacity:0;}70%{transform:scale(1.1);}100%{transform:scale(1);opacity:1;}}
 
 .stars{position:absolute;width:100%;height:100%;overflow:hidden;z-index:-1;}
-.stars span{position:absolute;width:2px;height:2px;background:white;animation:twinkle 2s infinite alternate;}
+.stars span{
+    position:absolute;
+    width:2px;
+    height:2px;
+    background:white;
+    animation:twinkle 2s infinite alternate;
+}
 @keyframes twinkle{from{opacity:0.2;}to{opacity:1;}}
+
+/* Nebulosa mágica */
+body::after{
+    content:"";
+    position:absolute;
+    width:200%;
+    height:200%;
+    background: radial-gradient(circle, rgba(255,0,150,0.1), transparent 60%),
+                radial-gradient(circle, rgba(0,150,255,0.1), transparent 60%);
+    animation:moveBg 20s linear infinite;
+    z-index:-2;
+}
+@keyframes moveBg{
+    from{transform:translate(-25%,-25%) rotate(0deg);} 
+    to{transform:translate(-25%,-25%) rotate(360deg);} 
+}
 
 .rocket{
     position:absolute;
@@ -57,7 +78,6 @@ button:hover{transform:scale(1.07);box-shadow:0 0 25px rgba(255,255,255,0.8);}
     font-size:40px;
     opacity:0;
 }
-
 @keyframes launch{
     0%{bottom:-100px;opacity:1;}
     100%{bottom:110%;opacity:0;}
@@ -70,7 +90,6 @@ button:hover{transform:scale(1.07);box-shadow:0 0 25px rgba(255,255,255,0.8);}
     border-radius:50%;
     opacity:0;
 }
-
 @keyframes explode{
     0%{transform:scale(0.5);opacity:1;}
     100%{transform:scale(8);opacity:0;}
@@ -91,19 +110,32 @@ button:hover{transform:scale(1.07);box-shadow:0 0 25px rgba(255,255,255,0.8);}
     text-align:center;
     opacity:0;
 }
-
 @keyframes mostrarCarta{
     0%{transform:translate(-50%,-50%) scale(0.5);opacity:0;}
     100%{transform:translate(-50%,-50%) scale(1);opacity:1;}
+}
+
+/* Brillo suave carta */
+.carta.brillo{
+    animation:brillar 3s ease-in-out infinite alternate;
+}
+@keyframes brillar{
+    from{box-shadow:0 0 30px rgba(255,255,255,0.4);} 
+    to{box-shadow:0 0 60px rgba(255,255,255,0.9);} 
+}
+
+.finalBtn{
+    margin-top:20px;
+    background:#ff4da6;
+    color:white;
+    display:none;
 }
 </style>
 </head>
 <body>
 
-<!-- Música local -->
-<audio id="musica" loop preload="auto" playsinline controls style="display:none;">
+<audio id="musica" loop preload="auto" playsinline>
   <source src="Musica.mp3" type="audio/mpeg">
-  Tu navegador no soporta audio.
 </audio>
 
 <div class="stars" id="stars"></div>
@@ -137,6 +169,7 @@ button:hover{transform:scale(1.07);box-shadow:0 0 25px rgba(255,255,255,0.8);}
         No eres casualidad.
         Eres mi lugar favorito.
     </p>
+    <button class="finalBtn" id="abrazoBtn">Abrázame cuando me veas 💞</button>
 </div>
 
 <script>
@@ -144,17 +177,21 @@ function aceptar(){
     document.getElementById('buttons').style.display='none';
 
     const musica = document.getElementById('musica');
-    musica.volume = 0.6;
-    musica.muted = false;
+    musica.volume = 0;
+    musica.play();
 
-    musica.play().then(()=>{
-        console.log('Música reproduciéndose correctamente');
-    }).catch((error)=>{
-        console.error('Error al reproducir la música:', error);
-    });
+    // Fade in música
+    let vol = 0;
+    const fade = setInterval(()=>{
+        if(vol < 0.6){
+            vol += 0.05;
+            musica.volume = vol;
+        } else {
+            clearInterval(fade);
+        }
+    },300);
 
-    const mensajeSi = document.getElementById('mensajeSi');
-    mensajeSi.classList.remove('hidden');
+    document.getElementById('mensajeSi').classList.remove('hidden');
 
     setTimeout(()=>{
         lanzarCohete();
@@ -172,6 +209,8 @@ function lanzarCohete(){
     setTimeout(()=>{
         const carta = document.getElementById('carta');
         carta.style.animation = 'mostrarCarta 1.5s ease forwards';
+        carta.classList.add('brillo');
+        document.getElementById('abrazoBtn').style.display='inline-block';
     },2500);
 }
 
@@ -184,14 +223,11 @@ function crearFuegos(){
         firework.style.left = Math.random()*100 + '%';
         firework.style.animation = 'explode 1.2s ease-out forwards';
         document.body.appendChild(firework);
-
-        setTimeout(()=>{
-            firework.remove();
-        },1200);
+        setTimeout(()=>{ firework.remove(); },1200);
     }
 }
 
-// Generar estrellas
+// Estrellas
 const starsContainer = document.getElementById('stars');
 for(let i=0;i<80;i++){
     let star=document.createElement('span');
@@ -201,16 +237,9 @@ for(let i=0;i<80;i++){
     starsContainer.appendChild(star);
 }
 
-// Activar botones con eventListener (mejor compatibilidad móvil)
+// Botones
 document.getElementById('btn1').addEventListener('click', aceptar);
 document.getElementById('btn2').addEventListener('click', aceptar);
-
-// ====== TESTS BÁSICOS ======
-console.assert(typeof aceptar === 'function', 'aceptar() debe existir');
-console.assert(typeof lanzarCohete === 'function', 'lanzarCohete() debe existir');
-console.assert(typeof crearFuegos === 'function', 'crearFuegos() debe existir');
-console.assert(document.getElementById('rocket'), 'El cohete debe existir en el DOM');
-console.assert(document.getElementById('carta'), 'La carta debe existir en el DOM');
 </script>
 
 </body>
