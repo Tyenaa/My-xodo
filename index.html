@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Ti 🌙</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{
+    background: radial-gradient(circle at top, #1a1a2e, #000);
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    text-align:center;
+    overflow:hidden;
+}
+.container{
+    padding:30px;
+    max-width:420px;
+    animation:fadeIn 2s ease-in-out;
+}
+h1{font-weight:600;font-size:1.9rem;margin-bottom:15px;}
+p{font-weight:300;font-size:1rem;margin-bottom:20px;line-height:1.6;}
+.buttons{display:flex;flex-direction:column;gap:15px;}
+button{
+    background:white;
+    color:black;
+    border:none;
+    padding:14px 25px;
+    border-radius:30px;
+    font-size:1rem;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s ease;
+    box-shadow:0 0 15px rgba(255,255,255,0.4);
+}
+button:hover{transform:scale(1.07);box-shadow:0 0 25px rgba(255,255,255,0.8);}
+.hidden{display:none;}
+.success{margin-top:20px;font-size:1.3rem;animation:pop 0.8s ease forwards;}
+.finalMessage{margin-top:25px;font-size:1.05rem;line-height:1.7;animation:fadeIn 2s ease forwards;}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+@keyframes pop{0%{transform:scale(0.5);opacity:0;}70%{transform:scale(1.1);}100%{transform:scale(1);opacity:1;}}
+
+.stars{position:absolute;width:100%;height:100%;overflow:hidden;z-index:-1;}
+.stars span{position:absolute;width:2px;height:2px;background:white;animation:twinkle 2s infinite alternate;}
+@keyframes twinkle{from{opacity:0.2;}to{opacity:1;}}
+
+.rocket{
+    position:absolute;
+    bottom:-100px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:40px;
+    opacity:0;
+}
+
+@keyframes launch{
+    0%{bottom:-100px;opacity:1;}
+    100%{bottom:110%;opacity:0;}
+}
+
+.firework{
+    position:absolute;
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    opacity:0;
+}
+
+@keyframes explode{
+    0%{transform:scale(0.5);opacity:1;}
+    100%{transform:scale(8);opacity:0;}
+}
+
+.carta{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%) scale(0);
+    background:white;
+    color:#111;
+    padding:25px;
+    border-radius:20px;
+    width:85%;
+    max-width:380px;
+    box-shadow:0 0 40px rgba(255,255,255,0.6);
+    text-align:center;
+    opacity:0;
+}
+
+@keyframes mostrarCarta{
+    0%{transform:translate(-50%,-50%) scale(0.5);opacity:0;}
+    100%{transform:translate(-50%,-50%) scale(1);opacity:1;}
+}
+</style>
+</head>
+<body>
+
+<!-- Música local (sube el archivo musica.mp3 junto a este HTML) -->
+<audio id="musica" loop preload="auto">
+  <source src="musica.mp3" type="audio/mpeg">
+  Tu navegador no soporta audio.
+</audio>
+
+<div class="stars" id="stars"></div>
+<div class="container">
+    <h1>Desde que llegaste a mi vida... 🌙</h1>
+    <p>
+        Entendí que no necesito viajar al espacio para encontrar algo increíble.
+        Porque lo más bonito ya lo encontré aquí.
+    </p>
+
+    <p><strong>Quiero compartir este 14 de febrero contigo.</strong></p>
+
+    <div class="buttons" id="buttons">
+        <button onclick="aceptar()">Sí 💫</button>
+        <button onclick="aceptar()">Claro que sí 🌙</button>
+    </div>
+
+    <div id="mensajeSi" class="hidden success">
+        💖 Sabía que dirías que sí 💖
+    </div>
+</div>
+
+<div id="rocket" class="rocket">🚀</div>
+
+<div id="carta" class="carta">
+    <h2>Para ti 💌</h2>
+    <p>
+        Si el cohete llegó hasta las estrellas,
+        es porque mi corazón ya decidió quedarse contigo.
+        <br><br>
+        No eres casualidad.
+        Eres mi lugar favorito.
+    </p>
+</div>
+
+<script>
+function aceptar(){
+    document.getElementById('buttons').style.display='none';
+    const musica = document.getElementById('musica');
+    musica.volume = 0.6; // volumen suave romántico
+    musica.play().catch(()=>{
+        console.log('El navegador bloqueó el autoplay hasta interacción.');
+    });
+
+    const mensajeSi = document.getElementById('mensajeSi');
+    mensajeSi.classList.remove('hidden');
+
+    setTimeout(()=>{
+        lanzarCohete();
+    },2000);
+}
+
+function lanzarCohete(){
+    const rocket = document.getElementById('rocket');
+    rocket.style.animation = 'launch 2.5s ease forwards';
+
+    setTimeout(()=>{
+        crearFuegos();
+    },1500);
+
+    setTimeout(()=>{
+        const carta = document.getElementById('carta');
+        carta.style.animation = 'mostrarCarta 1.5s ease forwards';
+    },2500);
+}
+
+function crearFuegos(){
+    for(let i=0;i<15;i++){
+        const firework = document.createElement('div');
+        firework.classList.add('firework');
+        firework.style.background = `hsl(${Math.random()*360},100%,70%)`;
+        firework.style.top = Math.random()*80 + '%';
+        firework.style.left = Math.random()*100 + '%';
+        firework.style.animation = 'explode 1.2s ease-out forwards';
+        document.body.appendChild(firework);
+
+        setTimeout(()=>{
+            firework.remove();
+        },1200);
+    }
+}
+
+// Generar estrellas
+const starsContainer = document.getElementById('stars');
+for(let i=0;i<80;i++){
+    let star=document.createElement('span');
+    star.style.top=Math.random()*100+'%';
+    star.style.left=Math.random()*100+'%';
+    star.style.animationDuration=(Math.random()*2+1)+'s';
+    starsContainer.appendChild(star);
+}
+
+// ====== TESTS BÁSICOS ======
+console.assert(typeof aceptar === 'function', 'aceptar() debe existir');
+console.assert(typeof lanzarCohete === 'function', 'lanzarCohete() debe existir');
+console.assert(typeof crearFuegos === 'function', 'crearFuegos() debe existir');
+console.assert(document.getElementById('rocket'), 'El cohete debe existir en el DOM');
+console.assert(document.getElementById('carta'), 'La carta debe existir en el DOM');
+</script>
+
+</body>
+</html>
