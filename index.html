@@ -101,7 +101,7 @@ button:hover{transform:scale(1.07);box-shadow:0 0 25px rgba(255,255,255,0.8);}
 <body>
 
 <!-- Música local -->
-<audio id="musica" loop preload="auto" playsinline>
+<audio id="musica" loop preload="auto" playsinline controls style="display:none;">
   <source src="Musica.mp3" type="audio/mpeg">
   Tu navegador no soporta audio.
 </audio>
@@ -117,8 +117,8 @@ button:hover{transform:scale(1.07);box-shadow:0 0 25px rgba(255,255,255,0.8);}
     <p><strong>Quiero compartir este 14 de febrero contigo.</strong></p>
 
     <div class="buttons" id="buttons">
-        <button onclick="aceptar()">Sí 💫</button>
-        <button onclick="aceptar()">Claro que sí 🌙</button>
+        <button id="btn1">Sí 💫</button>
+        <button id="btn2">Claro que sí 🌙</button>
     </div>
 
     <div id="mensajeSi" class="hidden success">
@@ -143,9 +143,9 @@ button:hover{transform:scale(1.07);box-shadow:0 0 25px rgba(255,255,255,0.8);}
 function aceptar(){
     document.getElementById('buttons').style.display='none';
 
-    // Usar el elemento audio del DOM (mejor compatibilidad en iPhone/Android)
     const musica = document.getElementById('musica');
     musica.volume = 0.6;
+    musica.muted = false;
 
     musica.play().then(()=>{
         console.log('Música reproduciéndose correctamente');
@@ -200,6 +200,10 @@ for(let i=0;i<80;i++){
     star.style.animationDuration=(Math.random()*2+1)+'s';
     starsContainer.appendChild(star);
 }
+
+// Activar botones con eventListener (mejor compatibilidad móvil)
+document.getElementById('btn1').addEventListener('click', aceptar);
+document.getElementById('btn2').addEventListener('click', aceptar);
 
 // ====== TESTS BÁSICOS ======
 console.assert(typeof aceptar === 'function', 'aceptar() debe existir');
