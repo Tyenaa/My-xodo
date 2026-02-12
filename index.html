@@ -100,8 +100,8 @@ button:hover{transform:scale(1.07);box-shadow:0 0 25px rgba(255,255,255,0.8);}
 </head>
 <body>
 
-<!-- Música local (sube el archivo musica.mp3 junto a este HTML) -->
-<audio id="musica" loop preload="auto">
+<!-- Música local -->
+<audio id="musica" loop preload="auto" playsinline>
   <source src="Musica.mp3" type="audio/mpeg">
   Tu navegador no soporta audio.
 </audio>
@@ -143,16 +143,14 @@ button:hover{transform:scale(1.07);box-shadow:0 0 25px rgba(255,255,255,0.8);}
 function aceptar(){
     document.getElementById('buttons').style.display='none';
 
-    // Crear audio directamente en interacción del usuario
-    const musica = new Audio('Musica.mp3');
-    musica.loop = true;
+    // Usar el elemento audio del DOM (mejor compatibilidad en iPhone/Android)
+    const musica = document.getElementById('musica');
     musica.volume = 0.6;
 
     musica.play().then(()=>{
         console.log('Música reproduciéndose correctamente');
     }).catch((error)=>{
         console.error('Error al reproducir la música:', error);
-        alert('Si no suena la música, revisa que Musica.mp3 esté bien subido en el repositorio.');
     });
 
     const mensajeSi = document.getElementById('mensajeSi');
